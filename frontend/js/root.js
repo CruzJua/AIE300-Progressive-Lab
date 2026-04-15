@@ -5,6 +5,13 @@ const itemForm = document.getElementById("item-form");
 const itemName = document.getElementById("item-name");
 const itemDescription = document.getElementById("item-description");
 
+//     Implement later
+// const reloadBtn = document.getElementById("reload-btn");
+// reloadBtn.addEventListener("click", () => {
+//     renderItems();
+// });
+
+
 itemForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const item = {
@@ -12,14 +19,24 @@ itemForm.addEventListener("submit", (e) => {
         description: itemDescription.value
     };
     items.push(item);
-    renderItems();
+    addItem(item);
     itemForm.reset();
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+    renderItems();
+});
+
+
 function renderItems() {
     itemContainer.innerHTML = "";
-    items.forEach((item) => {
-        const itemCard = document.createElement("div");
+    items.forEach( (item) => {
+        addItem(item)
+    });
+}
+
+function addItem(item) {
+    const itemCard = document.createElement("div");
         itemCard.classList.add("item-card");
         itemCard.innerHTML = `
             <p>Item Name: ${item.name}</p>
@@ -30,5 +47,4 @@ function renderItems() {
             </div>
         `;
         itemContainer.appendChild(itemCard);
-    });
 }
