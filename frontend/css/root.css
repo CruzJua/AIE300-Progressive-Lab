@@ -1,0 +1,83 @@
+:root {
+    --bg: #4e4842;
+    --shadow: #3e3832;
+    --fg: #fdd963;
+    --accent: #ffe989;
+    --dark-accent: #cda933;
+
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    background-color: var(--dark-accent);
+    color: var(--shadow);
+    margin: 0 0 20px 0;
+
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+
+}
+
+footer {
+    display: flex;
+    justify-content: space-around;
+    background-color: var(--dark-accent);
+    color: var(--shadow);
+    margin: auto 0 0 0;
+    padding: 0 15px;
+}
+
+.form-container {
+    width: 50%;
+    padding: 5px;
+    margin:  0 0 0 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#item-container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 5px;
+    margin: 0 5px 0 0;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.item-card {
+    border: 1px solid black;
+    padding: 10px;
+    width: 90%;
+    border-radius: 5px;
+}
+
+.item-card-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: flex-end;
+}
