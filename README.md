@@ -2,6 +2,8 @@
 
 A full-stack **CRUD inventory management** application built with **FastAPI**, **MongoDB**, and a vanilla **HTML/CSS/JS** frontend — fully containerized with **Docker Compose**.
 
+Also features an **Iris species classifier** — a PyTorch neural network trained on the classic Iris dataset and served via a REST endpoint, with predictions displayed directly in the UI.
+
 ---
 
 ## 🚀 Quick Start
@@ -52,6 +54,8 @@ The server will be available at `http://localhost:8000`.
 
 ## 📡 API Endpoints
 
+### Items (CRUD)
+
 | Method   | Endpoint            | Description                      |
 |----------|---------------------|----------------------------------|
 | `GET`    | `/items`            | Retrieve all items               |
@@ -60,13 +64,38 @@ The server will be available at `http://localhost:8000`.
 | `PUT`    | `/items/{item_id}`  | Update an existing item by ID    |
 | `DELETE` | `/items/{item_id}`  | Delete an item by ID             |
 
-### Item Schema
+#### Item Schema
 
 ```json
 {
   "name": "string (required)",
   "description": "string (optional)",
   "id": "string (auto-generated)"
+}
+```
+
+### ML Model (Iris Classifier)
+
+| Method | Endpoint   | Description                                      |
+|--------|------------|--------------------------------------------------|
+| `POST` | `/predict` | Classify an Iris flower and return a confidence score |
+
+#### Prediction Request
+
+```json
+{
+  "features": [5.1, 3.5, 1.4, 0.2]
+}
+```
+
+> Fields are `[sepal_length, sepal_width, petal_length, petal_width]` in centimeters.
+
+#### Prediction Response
+
+```json
+{
+  "prediction": "Iris-setosa",
+  "confidence": 0.98
 }
 ```
 
@@ -78,18 +107,56 @@ The server will be available at `http://localhost:8000`.
 ProgressiveLab/
 ├── api/
 │   ├── Dockerfile          # Backend container config
-│   ├── main.py             # FastAPI application & routes
+│   ├── main.py             # FastAPI application & routes (items + /predict)
 │   ├── mongoDAL.py         # MongoDB Data Access Layer
+│   ├── pytorch_basics.py   # SimpleClassifier model definition & training script
+│   ├── model.pth           # Saved Iris classifier weights (torch.save)
 │   ├── requirements.txt    # Python dependencies
 │   └── .env                # Environment variables
 ├── frontend/
 │   ├── Dockerfile          # Frontend container config (Nginx)
-│   ├── index.html          # Main HTML page
+│   ├── index.html          # Main HTML page (items + Iris prediction form)
 │   ├── css/                # Stylesheets
 │   └── js/                 # Client-side JavaScript
 ├── docker-compose.yml      # Multi-service orchestration
 └── README.md
 ```
+
+---
+
+## 🤖 Iris Classification Model
+
+The app includes a feed-forward neural network trained on the [Iris dataset](https://scikit-learn.org/stable/auto_examples/datasets/plot_iris_dataset.html) to classify flowers into one of three species:
+
+- **Iris-setosa**
+- **Iris-versicolor**
+- **Iris-virginica**
+
+### Architecture
+
+| Layer   | Details                        |
+|---------|--------------------------------|
+| Input   | 4 features (sepal/petal dims)  |
+| Hidden  | Linear(4 → 16) + ReLU         |
+| Output  | Linear(16 → 3) — 3 classes    |
+
+### Training
+
+- **Dataset split:** 80% train / 20% test via `random_split`
+- **DataLoader:** batch size 32, shuffled
+- **Loss function:** `CrossEntropyLoss`
+- **Optimizer:** `Adam` (lr=0.01)
+- **Epochs:** 50 (loss printed every 10)
+- **Saved with:** `torch.save(model.state_dict(), 'model.pth')`
+
+To retrain the model, run:
+
+```bash
+cd api
+uv run python pytorch_basics.py
+```
+
+The updated `model.pth` will be picked up automatically on the next container restart.
 
 ---
 
