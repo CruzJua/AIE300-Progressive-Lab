@@ -14,14 +14,29 @@
     <main>
         <div id="item-container">
         </div>
-        <div id="form-container" class="form-container">
-            <form id="item-form">
-                <label for="item-name">Item Name</label>
-                <input type="text" id="item-name" name="item-name">
-                <label for="item-description">Item Description</label>
-                <input type="text" id="item-description" name="item-description">
-                <button type="submit">Add Item</button>
-            </form>
+        <div id="forms-container">
+            <div class="form-container">
+                <form id="item-form">
+                    <label for="item-name">Item Name</label>
+                    <input type="text" id="item-name" name="item-name">
+                    <label for="item-description">Item Description</label>
+                    <input type="text" id="item-description" name="item-description">
+                    <button type="submit">Add Item</button>
+                </form>
+            </div>
+            <div class="form-container">
+                <form id="model-form">
+                    <label for="sepal-length">Sepal Length</label>
+                    <input type="number" step="any" id="sepal-length" name="sepal-length" required>
+                    <label for="sepal-width">Sepal Width</label>
+                    <input type="number" step="any" id="sepal-width" name="sepal-width" required>
+                    <label for="petal-length">Petal Length</label>
+                    <input type="number" step="any" id="petal-length" name="petal-length" required>
+                    <label for="petal-width">Petal Width</label>
+                    <input type="number" step="any" id="petal-width" name="petal-width" required>
+                    <button type="submit">Predict</button>
+                </form>
+            </div>
         </div>
     </main>
     <footer>

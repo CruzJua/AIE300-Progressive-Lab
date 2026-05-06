@@ -10,3 +10,4 @@ wheels/
 *.zip
 .env
 *.env
+.vscode
