@@ -181,3 +181,14 @@ This builds all three services (frontend, backend, and database) and starts them
 > **Frontend → Backend → DAL → Database**
 
 The frontend loads from a basic HTML/CSS/JS stack and uses JavaScript `fetch()` calls to hit the backend API. The backend sends the data it receives from the DAL up to the frontend, where the user is shown the data dynamically via JS. The DAL connects the backend to the database by providing functions that abstract all MongoDB operations.
+
+## 📝 Lab 3 — Questions & Answers
+
+### Part 1: Docker Model Runner
+
+- What model did you pull?
+  - I pulled the smollm2:latest model
+- What endpoints does it expose?
+  - http://localhost:12434/engines/llama.cpp/v1/chat/completions
+- What was the response to your test query?
+  - Docker is a tool for simplifying containerization and deployment of applications using isolated environments that can be easily scaled and updated.
