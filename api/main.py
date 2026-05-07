@@ -3,15 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from mongoDAL import MongoDAL
-import torch
-from pytorch_basics import SimpleClassifier
+import requests
 
 app = FastAPI()
 dal = MongoDAL()
-
-model = SimpleClassifier(input_size=4, hidden_size=16, num_classes=3)
-model.load_state_dict(torch.load("model.pth"))
-model.eval()
 
 app.add_middleware(
     CORSMiddleware,
@@ -56,22 +51,16 @@ def create_item(item: Item):
     item.id = item_id
     return item
 
+
 @app.post("/predict")
 def predict(req: PredictionRequest):
-    # 1. Convert input to tensor
-    # 2. Run inference (model.eval(), torch.no_grad())
-    # 3. Return prediction as JSON
-    features = torch.tensor(req.features, dtype=torch.float32)
-    response: dict[str, any] = {}
-    classNames = ["Iris-setosa", "Iris-versicolor", "Iris-virginica"]
 
-    with torch.no_grad():
-        output = model(features)
-        probabilities = torch.softmax(output, dim=0)
-        confidence, predicted = torch.max(probabilities, 0)
-        response["prediction"] = classNames[predicted.item()]
-        response["confidence"] = round(confidence.item(), 2)
-    return response
+    # Forward to model service instead of running locally
+    response = requests.post(
+        "http://model-service:8001/predict",
+        json={"features": req.features}
+    )
+    return response.json()
 
 @app.put("/items/{item_id}")
 def update_item(item_id: str, item: Item):
