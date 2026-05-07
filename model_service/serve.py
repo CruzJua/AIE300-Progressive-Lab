@@ -10,7 +10,7 @@ model = None
 @app.on_event("startup")
 def load_model():
     global model
-    model = torch.load("model/my_model.pt")  # or keras.models.load_model(...)
+    model = torch.load("./model/model.pth")
     model.eval()
 
 @app.get("/health")
@@ -20,10 +20,15 @@ def health():
 @app.post("/predict")
 def predict(data: dict):
     # Convert input to tensor, run prediction, return result
-    input_data = np.array(data["features"])
-    features = torch.tensor(input_data, dtype=torch.float32)
+    features = torch.tensor(data.features, dtype=torch.float32)
+    response: dict[str, any] = {}
+    classNames = ["Iris-setosa", "Iris-versicolor", "Iris-virginica"]
 
     with torch.no_grad():
-        result = model(features)
-    
-    return {"prediction": result, "model": "your-model-v1"}
+        output = model(features)
+        probabilities = torch.softmax(output, dim=0)
+        confidence, predicted = torch.max(probabilities, 0)
+        response["prediction"] = classNames[predicted.item()]
+        response["confidence"] = round(confidence.item(), 2)
+        response["model"] = "Iris-classifier-v1"
+    return response
