@@ -8,6 +8,10 @@ anyio==4.13.0
     # via
     #   starlette
     #   watchfiles
+certifi==2022.12.7
+    # via requests
+charset-normalizer==2.1.1
+    # via requests
 click==8.3.1
     # via uvicorn
 colorama==0.4.6 ; sys_platform == 'win32'
@@ -27,7 +31,9 @@ h11==0.16.0
 httptools==0.7.1
     # via uvicorn
 idna==3.4
-    # via anyio
+    # via
+    #   anyio
+    #   requests
 jinja2==3.1.6
     # via torch
 joblib==1.5.3
@@ -54,6 +60,8 @@ python-dotenv==1.2.2
     # via uvicorn
 pyyaml==6.0.3
     # via uvicorn
+requests==2.28.1
+    # via l1projectkickoff
 scikit-learn==1.8.0
     # via l1projectkickoff
 scipy==1.17.1
@@ -83,6 +91,8 @@ typing-inspection==0.4.2
     # via
     #   fastapi
     #   pydantic
+urllib3==1.26.13
+    # via requests
 uvicorn==0.42.0
     # via l1projectkickoff
 uvloop==0.22.1 ; platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32'
