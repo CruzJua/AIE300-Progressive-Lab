@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
@@ -26,10 +26,6 @@ class Item(BaseModel):
 class PredictionRequest(BaseModel):
     features: list[float]
 
-# In-memory storage
-items_db: dict[int, Item] = {}
-next_id: int = 0
-
 
 @app.get("/items")
 def get_items() -> list[Item]:
@@ -45,10 +41,11 @@ def get_item(item_id: str):
     return item
 
 @app.post("/items")
-def create_item(item: Item):
+def create_item(item: Item, response: Response):
     item_dict = item.model_dump(exclude={"id"})
     item_id = dal.create_item(item_dict)
     item.id = item_id
+    response.status_code = status.HTTP_201_CREATED
     return item
 
 
