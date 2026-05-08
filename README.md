@@ -191,4 +191,4 @@ The frontend loads from a basic HTML/CSS/JS stack and uses JavaScript `fetch()` 
 - What endpoints does it expose?
   - http://localhost:12434/engines/llama.cpp/v1/chat/completions
 - What was the response to your test query?
-  - Docker is a tool for simplifying containerization and deployment of applications using isolated environments that can be easily scaled and updated.
+  - Docker is an open-source project that provides an environment for running different operating systems and applications as isolated containers.
