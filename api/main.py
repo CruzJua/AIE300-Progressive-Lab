@@ -40,12 +40,11 @@ def get_item(item_id: str):
         raise HTTPException(status_code=404, detail="Item not found")
     return item
 
-@app.post("/items")
-def create_item(item: Item, response: Response):
+@app.post("/items", status_code=status.HTTP_201_CREATED)
+def create_item(item: Item):
     item_dict = item.model_dump(exclude={"id"})
     item_id = dal.create_item(item_dict)
     item.id = item_id
-    response.status_code = status.HTTP_201_CREATED
     return item
 
 
