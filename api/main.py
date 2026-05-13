@@ -17,18 +17,27 @@ app.add_middleware(
 
 class Item(BaseModel):
     name: str
-    id: Optional[str] = None
     description: Optional[str] = None
+    id: Optional[str] = None
 
     def __str__(self):
         return f"Item: {self.name}\nDescription: {self.description}"
 
-class PredictionRequest(BaseModel):
-    features: list[float]
+class Iris(BaseModel):
+    sepal_length: float
+    sepal_width: float
+    petal_length: float
+    petal_width: float
+
+    def __str__(self):
+        return f"Iris: {self.sepal_length}, {self.sepal_width}, {self.petal_length}, {self.petal_width}"
+
+    def to_list(self) -> list[float]:
+        return [self.sepal_length, self.sepal_width, self.petal_length, self.petal_width]
 
 
 @app.get("/items")
-def get_items() -> list[Item]:
+def get_items():
     items = dal.get_items()
     return items
     
@@ -49,14 +58,19 @@ def create_item(item: Item):
 
 
 @app.post("/predict")
-def predict(req: PredictionRequest):
-
-    # Forward to model service instead of running locally
+def predict(iris: Iris):
     response = requests.post(
         "http://model-service:8001/predict",
-        json={"features": req.features}
+        json={"features": iris.to_list()}
     )
-    return response.json()
+    result = response.json()
+    item = Item(
+        name=result["prediction"],
+        description=f"This is an {result['prediction']} that was predicted with {result['confidence']*100}% confidence."
+    )
+    item_id = dal.create_item(item.model_dump(exclude={"id"}))
+    item.id = item_id
+    return item
 
 @app.put("/items/{item_id}")
 def update_item(item_id: str, item: Item):

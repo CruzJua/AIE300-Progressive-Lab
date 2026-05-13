@@ -1,8 +1,12 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 import torch
 import torch.nn as nn
 
 app = FastAPI()
+
+class PredictRequest(BaseModel):
+    features: list[float]
 
 class SimpleClassifier(nn.Module):
     def __init__(self, input_size, hidden_size, num_classes):
@@ -30,8 +34,8 @@ def health():
     return {"status": "healthy", "model_loaded": model is not None}
 
 @app.post("/predict")
-def predict(data: dict):
-    features = torch.tensor(data["features"], dtype=torch.float32)
+def predict(data: PredictRequest):
+    features = torch.tensor(data.features, dtype=torch.float32)
     classNames = ["Iris-setosa", "Iris-versicolor", "Iris-virginica"]
 
     with torch.no_grad():

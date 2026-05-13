@@ -15,7 +15,10 @@ const petalWidth = document.getElementById("petal-width");
 modelForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const model = {
-        features: [sepalLength.value, sepalWidth.value, petalLength.value, petalWidth.value],
+        sepal_length: parseFloat(sepalLength.value),
+        sepal_width: parseFloat(sepalWidth.value),
+        petal_length: parseFloat(petalLength.value),
+        petal_width: parseFloat(petalWidth.value),
     };
 
     try {
@@ -26,7 +29,7 @@ modelForm.addEventListener("submit", async (e) => {
         });
         if (!res.ok) throw new Error("Failed to pretict Iris");
         const created = await res.json();
-        addIrisCard(created);
+        addItemCard(created);
         modelForm.reset();
     } catch (err) {
         console.error(err);
@@ -100,25 +103,6 @@ function addItemCard(item) {
     itemContainer.appendChild(itemCard);
 }
 
-function addIrisCard(item) {
-    if (itemContainer.textContent === "NO ITEMS FOUND") {
-        itemContainer.innerHTML = "";
-    }
-    const itemCard = document.createElement("div");
-    itemCard.classList.add("item-card");
-    itemCard.dataset.id = item.id;
-    item.description = `This is an ${item.prediction} that was predicted with ${item.confidence*100}% confidence.`; 
-    item.name = item.prediction;
-    itemCard.innerHTML = `
-        <p>Item Name: ${item.name}</p>
-        <p>Item Description: ${item.description}</p>
-        <div class="item-card-buttons">
-            <button onclick="editItem('${item.id}')">Edit</button>
-            <button onclick="deleteItem('${item.id}')">Delete</button>
-        </div>
-    `;
-    itemContainer.appendChild(itemCard);
-}
 async function deleteItem(id) {
     try {
         const res = await fetch(`${API_URL}items/${id}`, { method: "DELETE" });
