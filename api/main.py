@@ -7,6 +7,7 @@ import requests
 import anthropic
 from dotenv import load_dotenv
 import os
+import json
 
 load_dotenv()
 
@@ -20,6 +21,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+class AnalyzeRequest(BaseModel):
+    content: str  # e.g., item descriptions, user text, etc.
 
 class Item(BaseModel):
     name: str
@@ -49,6 +53,55 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
     conversation_history: list
+
+
+@app.post("/analyze")
+def analyze(request: AnalyzeRequest):
+    system_prompt = """You are a data analysis assistant. Analyze the provided content
+and respond with ONLY valid JSON in this exact format:
+{
+  "categories": ["category1", "category2"],
+  "tags": ["tag1", "tag2", "tag3"],
+  "sentiment": "positive" | "negative" | "neutral",
+  "summary": "one sentence summary"
+}
+Do not include any text outside the JSON object."""
+
+    # Few-shot example in the prompt
+    few_shot = """Example:
+Input: "The new laptop is incredibly fast and the battery lasts all day. Best purchase this year."
+Output: {"categories": ["technology", "review"], "tags": ["laptop", "performance", "battery"], "sentiment": "positive", "summary": "Highly positive review praising laptop speed and battery life."}"""
+
+    messages = [
+        {"role": "user", "content": few_shot + "\n\nNow analyze this:\n" + request.content}
+    ]
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            system=system_prompt,
+            max_tokens=512,
+            temperature=0.2  # Low temperature for consistent structured output
+        )
+        raw = response.choices[0].message.content
+
+        # Parse and validate JSON
+        result = json.loads(raw)
+
+        # Validate expected fields exist
+        required = ["categories", "tags", "sentiment", "summary"]
+        for field in required:
+            if field not in result:
+                raise ValueError(f"Missing field: {field}")
+
+        return result
+
+    except json.JSONDecodeError:
+        # Retry once or return fallback
+        raise HTTPException(status_code=422, detail="LLM returned invalid JSON. Try again.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
