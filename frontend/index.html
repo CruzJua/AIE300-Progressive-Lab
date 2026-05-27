@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live</title> <!-- Replace with 'Progressive Lab' after testing-->
+    <title>Progressive Lab AIE300</title>
+    <meta name="description" content="AIE300 Progressive Lab — manage items, predict Iris species, and chat with an AI assistant.">
     <link rel="stylesheet" href="css/root.css">
     <script src="js/root.js" defer></script>
+    <script src="js/chat.js" defer></script>
 </head>
 <body>
     <header>
@@ -39,6 +41,34 @@
             </div>
         </div>
     </main>
+
+    <!-- ── Floating Chat Widget (made by Claude Sonnet 4.6) ── -->
+    <div id="chat-widget" class="collapsed" aria-label="AI Assistant chat widget">
+
+        <!-- Clickable header bar — toggles open/closed -->
+        <button id="chat-toggle" aria-expanded="false" aria-controls="chat-body">
+            <span id="chat-toggle-icon">💬</span>
+            <span id="chat-toggle-label">AI Assistant</span>
+            <span id="chat-arrow" aria-hidden="true">▲</span>
+        </button>
+
+        <!-- Collapsible body -->
+        <div id="chat-body">
+            <div id="chat-window" role="log" aria-live="polite" aria-label="Conversation history"></div>
+            <div id="chat-input-row">
+                <textarea
+                    id="chat-input"
+                    rows="1"
+                    placeholder="Ask the assistant anything…"
+                    aria-label="Chat message input"
+                ></textarea>
+                <button id="chat-send-btn" aria-label="Send message">
+                    <span id="chat-send-label">Send</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
     <footer>
         <p>Juan Cruz &copy 2026</p>
     </footer>

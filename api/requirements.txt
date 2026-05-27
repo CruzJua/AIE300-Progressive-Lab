@@ -4,12 +4,19 @@ annotated-doc==0.0.4
     # via fastapi
 annotated-types==0.7.0
     # via pydantic
+anthropic==0.104.1
+    # via l1projectkickoff
 anyio==4.13.0
     # via
+    #   anthropic
+    #   httpx
     #   starlette
     #   watchfiles
 certifi==2022.12.7
-    # via requests
+    # via
+    #   httpcore
+    #   httpx
+    #   requests
 charset-normalizer==2.1.1
     # via requests
 click==8.3.1
@@ -18,8 +25,12 @@ colorama==0.4.6 ; sys_platform == 'win32'
     # via
     #   click
     #   uvicorn
+distro==1.9.0
+    # via anthropic
 dnspython==2.8.0
     # via pymongo
+docstring-parser==0.18.0
+    # via anthropic
 fastapi==0.135.3
     # via l1projectkickoff
 filelock==3.25.2
@@ -27,15 +38,24 @@ filelock==3.25.2
 fsspec==2026.2.0
     # via torch
 h11==0.16.0
-    # via uvicorn
+    # via
+    #   httpcore
+    #   uvicorn
+httpcore==1.0.9
+    # via httpx
 httptools==0.7.1
     # via uvicorn
+httpx==0.28.1
+    # via anthropic
 idna==3.4
     # via
     #   anyio
+    #   httpx
     #   requests
 jinja2==3.1.6
     # via torch
+jiter==0.15.0
+    # via anthropic
 joblib==1.5.3
     # via scikit-learn
 markupsafe==3.0.3
@@ -50,6 +70,7 @@ numpy==2.4.3
     #   scipy
 pydantic==2.12.5
     # via
+    #   anthropic
     #   fastapi
     #   l1projectkickoff
 pydantic-core==2.41.5
@@ -57,7 +78,9 @@ pydantic-core==2.41.5
 pymongo==4.17.0
     # via l1projectkickoff
 python-dotenv==1.2.2
-    # via uvicorn
+    # via
+    #   l1projectkickoff
+    #   uvicorn
 pyyaml==6.0.3
     # via uvicorn
 requests==2.28.1
@@ -68,6 +91,8 @@ scipy==1.17.1
     # via scikit-learn
 setuptools==70.2.0
     # via torch
+sniffio==1.3.1
+    # via anthropic
 starlette==1.0.0
     # via fastapi
 sympy==1.14.0
@@ -80,6 +105,7 @@ torch==2.11.0+cpu ; sys_platform != 'darwin'
     # via l1projectkickoff
 typing-extensions==4.15.0
     # via
+    #   anthropic
     #   anyio
     #   fastapi
     #   pydantic
