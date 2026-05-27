@@ -4,8 +4,14 @@ from pydantic import BaseModel
 from typing import Optional
 from mongoDAL import MongoDAL
 import requests
+import anthropic
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = FastAPI()
+client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 dal = MongoDAL()
 
 app.add_middleware(
@@ -35,6 +41,41 @@ class Iris(BaseModel):
     def to_list(self) -> list[float]:
         return [self.sepal_length, self.sepal_width, self.petal_length, self.petal_width]
 
+
+class ChatRequest(BaseModel):
+    message: str
+    conversation_history: list = []
+
+class ChatResponse(BaseModel):
+    reply: str
+    conversation_history: list
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest):
+    system_prompt = "You are a helpful assistant for a simple class assignment website that allows for creation and storing of Items ({name: string, description: string}) and iris flower predictions from sepal and petal measurements. Be concise and helpful."
+
+    messages = list(request.conversation_history)
+    messages.append({"role": "user", "content": request.message})
+
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            system=system_prompt,
+            messages=messages,
+            max_tokens=512,
+            temperature=0.7
+        )
+        reply = response.content[0].text
+
+        # Return updated history so the frontend can send it back
+        updated_history = request.conversation_history + [
+            {"role": "user", "content": request.message},
+            {"role": "assistant", "content": reply}
+        ]
+        return ChatResponse(reply=reply, conversation_history=updated_history)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/items")
 def get_items():
