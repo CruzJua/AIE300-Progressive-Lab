@@ -114,7 +114,6 @@ function appendLoadingIndicator() {
 function setLoading(isLoading) {
     chatSendBtn.disabled = isLoading;
     chatSendLbl.textContent = isLoading ? "…" : "Send";
-    chatSpinner.hidden = !isLoading;
 }
 
 /** Scroll the chat window to the very bottom. */

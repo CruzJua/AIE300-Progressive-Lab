@@ -23,7 +23,7 @@ app.add_middleware(
 )
 
 class AnalyzeRequest(BaseModel):
-    content: str  # e.g., item descriptions, user text, etc.
+    content: str # e.g., item descriptions, user text, etc.
 
 class Item(BaseModel):
     name: str
@@ -77,14 +77,14 @@ Output: {"categories": ["technology", "review"], "tags": ["laptop", "performance
     ]
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
             messages=messages,
             system=system_prompt,
             max_tokens=512,
             temperature=0.2  # Low temperature for consistent structured output
         )
-        raw = response.choices[0].message.content
+        raw = response.content[0].text
 
         # Parse and validate JSON
         result = json.loads(raw)
