@@ -1,12 +1,16 @@
 // All visuals where done by claude Sonnet 4.6
 const API_URL_CHAT = "http://localhost:8000/chat";
 
-const chatWidget   = document.getElementById("chat-widget");
-const chatToggle   = document.getElementById("chat-toggle");
-const chatWindow   = document.getElementById("chat-window");
-const chatInput    = document.getElementById("chat-input");
-const chatSendBtn  = document.getElementById("chat-send-btn");
-const chatSendLbl  = document.getElementById("chat-send-label");
+const chatWidget = document.getElementById("chat-widget");
+const chatToggle = document.getElementById("chat-toggle");
+const chatWindow = document.getElementById("chat-window");
+const chatInput = document.getElementById("chat-input");
+const chatSendBtn = document.getElementById("chat-send-btn");
+const chatSendLbl = document.getElementById("chat-send-label");
+const tabBtnChat = document.getElementById("tab-btn-chat");
+const tabBtnAgent = document.getElementById("tab-btn-agent");
+const chatPanel = document.getElementById("chat-panel");
+const agentPanel = document.getElementById("agent-panel");
 
 // ── Toggle open / collapsed ───────────────────────────────────────────────────
 chatToggle.addEventListener("click", () => {
@@ -14,11 +18,13 @@ chatToggle.addEventListener("click", () => {
     chatToggle.setAttribute("aria-expanded", String(!isCollapsed));
     // Focus the input when opening so the user can type immediately
     if (!isCollapsed) {
-        setTimeout(() => {
+    setTimeout(() => {
+        if (!chatPanel.hasAttribute("hidden")) {
             chatInput.focus();
-            scrollToBottom();
-        }, 310);
-    }
+        }
+        scrollToBottom();
+    }, 310);
+}
 });
 
 // Persists the full conversation so multi-turn context works
@@ -120,3 +126,24 @@ function setLoading(isLoading) {
 function scrollToBottom() {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
+
+function switchTab(mode) {
+    const isChat = mode === "chat";
+
+    tabBtnChat.classList.toggle("active", isChat);
+    tabBtnAgent.classList.toggle("active", !isChat);
+
+    tabBtnChat.setAttribute("aria-selected",  String(isChat));
+    tabBtnAgent.setAttribute("aria-selected", String(!isChat));
+
+    if (isChat) {
+        chatPanel.removeAttribute("hidden");
+        agentPanel.setAttribute("hidden", "");
+    } else {
+        agentPanel.removeAttribute("hidden");
+        chatPanel.setAttribute("hidden", "");
+    }
+}
+
+tabBtnChat.addEventListener("click",  () => switchTab("chat"));
+tabBtnAgent.addEventListener("click", () => switchTab("agent"));
