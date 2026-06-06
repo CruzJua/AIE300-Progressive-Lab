@@ -2,7 +2,7 @@ import os
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://backend:27017")
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 
 class MongoDAL:
     def __init__(self):
@@ -25,6 +25,23 @@ class MongoDAL:
             return self._map_mongo_item(doc)
         except:
             return None
+    
+    def search_items(self, keyword: str):
+        try:
+            regex_query = {"$regex": keyword, "$options": "i"}
+            
+            query = {
+                "$or": [
+                    {"name": regex_query},
+                    {"description": regex_query}
+                ]
+            }
+            
+            docs = list(self.items.find(query))
+            return [self._map_mongo_item(doc) for doc in docs]
+        except Exception as e:
+            print(f"Error searching items: {e}")
+            return []
 
     def create_item(self, item_dict: dict) -> str:
         result = self.items.insert_one(item_dict)

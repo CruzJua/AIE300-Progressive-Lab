@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/root.css">
     <script src="js/root.js" defer></script>
     <script src="js/chat.js" defer></script>
+    <script src="js/agent.js" defer></script>
 </head>
 <body>
     <header>
@@ -54,21 +55,82 @@
 
         <!-- Collapsible body -->
         <div id="chat-body">
-            <div id="chat-window" role="log" aria-live="polite" aria-label="Conversation history"></div>
-            <div id="chat-input-row">
-                <textarea
-                    id="chat-input"
-                    rows="1"
-                    placeholder="Ask the assistant anything…"
-                    aria-label="Chat message input"
-                ></textarea>
-                <button id="chat-send-btn" aria-label="Send message">
-                    <span id="chat-send-label">Send</span>
+            <div id="chat-tab-bar" role="tablist" aria-label="Chat mode selector">
+                <button 
+                    id="tab-btn-chat" 
+                    class="chat-tab-btn active" 
+                    role="tab" 
+                    aria-selected="true" 
+                    aria-controls="chat-panel">
+                    Chat
+                </button>
+                <button 
+                    id="tab-btn-agent" 
+                    class="chat-tab-btn" 
+                    role="tab" 
+                    aria-selected="false" 
+                    aria-controls="agent-panel">
+                    Agent
                 </button>
             </div>
-        </div>
 
+            <div id="chat-panel" role="tabpanel" aria-labelledby="tab-btn-chat">
+                <div id="chat-window" role="log" aria-live="polite" aria-label="Conversation history"></div>
+                <div id="chat-input-row">
+                    <textarea
+                        id="chat-input"
+                        rows="1"
+                        placeholder="Ask the assistant anything..."
+                        aria-label="Chat message input"
+                    ></textarea>
+                    <button id="chat-send-btn" aria-label="Send message">
+                        <span id="chat-send-label">Send</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="agent-panel" role="tabpanel" aria-labelledby="tab-btn-agent" hidden>
+
+                <details id="agent-trace-drawer">
+                    <summary id="agent-trace-toggle">
+                        🔍 Reasoning Trace — <span id="agent-trace-count">0</span> step(s)
+                    </summary>
+                    <div id="agent-trace-scroll">
+                        <ul id="agent-trace-list"></ul>
+                </div>
+                </details>
+        
+                <div id="agent-conversation-window"
+                    role="log"
+                    aria-live="polite"
+                    aria-label="Agent conversation history">
+                </div>
+        
+                <div id="agent-loading">Agent is thinking…</div>
+        
+                <div id="agent-confirmation-modal">
+                    <p>
+                        <strong>Confirmation Required:</strong>
+                        The agent wants to execute <span id="tool-name-span"></span>.
+                    </p>
+                    <pre id="tool-args-pre"></pre>
+                    <button id="agent-confirm-btn">Allow</button>
+                    <button id="agent-deny-btn">Deny</button>
+                </div>
+        
+                <div id="agent-input-row">
+                    <input
+                        type="text"
+                        id="agent-task-input"
+                        placeholder="e.g. Find items about laptops, if none exist add one"
+                        aria-label="Agent task input"
+                    />
+                    <button id="agent-submit-btn">Run</button>
+                </div>
+            </div>
+        </div>
     </div>
+
     <footer>
         <p>Juan Cruz &copy 2026</p>
     </footer>
